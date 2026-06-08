@@ -26,9 +26,6 @@ function escapeXml(str) {
 }
 
 // --- Landing Page (SEO-optimized marketing page) ---
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'landing.html'));
-});
 
 // --- Privacy & Terms ---
 app.get('/privacy', (req, res) => {
@@ -196,7 +193,7 @@ app.get('/api/tier', (req, res) => {
 // --- SPA fallback ---
 // Serve the SPA app at /app
 app.get('/app', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'app.html'));
 });
 // SPA nested routes under /app
 
