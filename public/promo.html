@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Promo Dashboard — InvoiceForge</title>
+  <meta name="robots" content="noindex">
+  <style>
+    :root {
+      --bg: #f5f6f8; --surface: #fff; --border: #e5e7eb;
+      --text: #1a1a2e; --text-secondary: #6b7280;
+      --primary: #4f46e5; --green: #059669;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background:var(--bg); color:var(--text); font-size:14px; }
+    .nav { background:var(--surface); border-bottom:1px solid var(--border); padding:0 24px; height:56px; display:flex; align-items:center; justify-content:space-between; }
+    .nav h1 { font-size:16px; font-weight:700; }
+    .nav a { color:var(--primary); text-decoration:none; font-weight:600; font-size:13px; }
+    .container { max-width:1100px; margin:0 auto; padding:32px 24px; }
+    h2 { font-size:20px; font-weight:700; margin-bottom:20px; }
+    .tabs { display:flex; gap:4px; margin-bottom:24px; background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:4px; width:fit-content; }
+    .tab { padding:8px 18px; border-radius:6px; border:none; background:none; cursor:pointer; font-size:13px; font-weight:600; color:var(--text-secondary); }
+    .tab.active { background:var(--primary); color:#fff; }
+    .card { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:20px; margin-bottom:16px; }
+    .card h3 { font-size:14px; font-weight:700; margin-bottom:4px; }
+    .card .meta { font-size:11px; color:var(--text-muted); margin-bottom:12px; }
+    .card pre { background:var(--bg); padding:12px; border-radius:6px; font-size:13px; line-height:1.5; white-space:pre-wrap; word-break:break-word; max-height:300px; overflow-y:auto; }
+    .btn-copy { display:inline-flex; align-items:center; gap:6px; padding:6px 14px; background:var(--primary); color:#fff; border:none; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; margin-top:10px; }
+    .btn-copy:hover { opacity:0.9; }
+    .btn-copy.copied { background:var(--green); }
+    .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:32px; }
+    .stat-card { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:20px; text-align:center; }
+    .stat-card .num { font-size:32px; font-weight:800; color:var(--primary); }
+    .stat-card .label { font-size:12px; color:var(--text-muted); margin-top:4px; text-transform:uppercase; letter-spacing:0.05em; }
+    .page-list { max-height:300px; overflow-y:auto; }
+    .page-row { display:flex; justify-content:space-between; padding:8px 12px; border-bottom:1px solid var(--border); font-size:13px; }
+    .page-row .count { font-weight:700; color:var(--primary); }
+    @media (max-width:600px) { .stats { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+<div class="nav">
+  <h1>&#9670; InvoiceForge Promo Dashboard</h1>
+  <div><a href="/">Site</a> &nbsp; <a href="/app">App</a></div>
+</div>
+<div class="container">
+
+  <!-- Stats -->
+  <div class="stats" id="stats">
+    <div class="stat-card"><div class="num" id="totalViews">-</div><div class="label">Total Page Views</div></div>
+    <div class="stat-card"><div class="num" id="uniquePages">-</div><div class="label">Pages Tracked</div></div>
+    <div class="stat-card"><div class="num" id="startedAt">-</div><div class="label">Tracking Since</div></div>
+  </div>
+
+  <!-- Per-page breakdown -->
+  <div class="card" style="margin-bottom:32px">
+    <h3>Page Breakdown</h3>
+    <div class="page-list" id="pageList">Loading...</div>
+  </div>
+
+  <!-- Tabs -->
+  <h2>Social Media Posts</h2>
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('twitter')">Twitter / X</button>
+    <button class="tab" onclick="switchTab('linkedin')">LinkedIn</button>
+    <button class="tab" onclick="switchTab('shortForm')">Reddit / Short</button>
+  </div>
+
+  <div id="postContainer">Loading...</div>
+</div>
+
+<script>
+async function init() {
+  // Fetch analytics
+  try {
+    const r = await fetch('/api/analytics');
+    const a = await r.json();
+    document.getElementById('totalViews').textContent = a.totalViews || 0;
+    const pages = a.pageViews || {};
+    document.getElementById('uniquePages').textContent = Object.keys(pages).length;
+    document.getElementById('startedAt').textContent = a.startedAt ? new Date(a.startedAt).toLocaleDateString() : '-';
+    const list = document.getElementById('pageList');
+    list.innerHTML = Object.entries(pages)
+      .sort(([,a],[,b]) => b - a)
+      .map(([p, c]) => `<div class="page-row"><span>${p || '/'}</span><span class="count">${c}</span></div>`)
+      .join('') || '<div style="padding:12px;color:var(--text-muted)">No views yet</div>';
+  } catch { /* analytics may not be available */ }
+
+  // Fetch posts
+  await loadPosts('twitter');
+}
+
+async function loadPosts(platform) {
+  const container = document.getElementById('postContainer');
+  container.innerHTML = 'Loading...';
+  try {
+    const r = await fetch('/api/promo/weekly');
+    const data = await r.json();
+    const templates = { twitter: [], linkedin: [], shortForm: [] };
+
+    // Fetch individual posts per platform
+    for (let i = 0; i < 5; i++) {
+      try {
+        const pr = await fetch(`/api/promo/post?platform=${platform}&index=${i}`);
+        const p = await pr.json();
+        if (p.content && !p.content.includes('not found')) {
+          templates[platform].push(p.content);
+        }
+      } catch { break; }
+    }
+
+    container.innerHTML = templates[platform].map((content, i) =>
+      `<div class="card">
+        <h3>Post #${i + 1}</h3>
+        <div class="meta">${platform} &middot; Template ${i + 1}</div>
+        <pre id="post-${platform}-${i}">${escapeHTML(content)}</pre>
+        <button class="btn-copy" onclick="copyPost('post-${platform}-${i}', this)">Copy Post</button>
+      </div>`
+    ).join('');
+  } catch (e) {
+    container.innerHTML = '<div class="card"><p>Failed to load posts.</p></div>';
+  }
+}
+
+function switchTab(platform) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  loadPosts(platform);
+}
+
+function copyPost(id, btn) {
+  const text = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy Post'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function escapeHTML(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+init();
+</script>
+</body>
+</html>

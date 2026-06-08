@@ -1,4 +1,4 @@
-// Generate PDF-ready HTML for invoices
+﻿// Generate PDF-ready HTML for invoices
 const { TEMPLATES } = require('./invoice');
 
 function renderInvoice(invoice) {
@@ -262,7 +262,7 @@ ${invoice.notes ? `
 </div>` : ''}
 
 <div class="footer">
-  InvoiceForge &mdash; Created with InvoiceForge Micro SaaS
+  Created with <strong>InvoiceForge</strong> &mdash; Free invoice generator &middot; invoiceforge-production-3495.up.railway.app
 </div>
 
 </body></html>`;

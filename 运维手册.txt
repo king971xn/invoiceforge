@@ -1,0 +1,142 @@
+=== InvoiceForge 运维手册 ===
+最后更新：2026-06-06
+
+============================================================
+一、你的产品是什么
+============================================================
+
+产品名称：InvoiceForge
+功能：在线发票生成器，用户可创建发票、管理客户、导出PDF
+定价：免费版 3张/月，Pro版 ¥9.99/月
+
+============================================================
+二、所有地址汇总
+============================================================
+
+产品网站（用户打开这个）：
+  https://invoiceforge-production-3495.up.railway.app
+
+收款页面：
+  https://invoiceforge.lemonsqueezy.com/checkout/buy/5cb1d06e-68a8-4cd1-bd6d-9b4ed4f9066e
+
+收款后台（看收入、提现）：
+  https://app.lemonsqueezy.com
+
+代码仓库：
+  https://github.com/king971xn/invoiceforge
+
+部署平台（看运行状态）：
+  https://railway.app
+
+电脑上的项目文件夹：
+  C:\Users\Administrator\Documents\Codex\2026-06-06\token\work\invoiceforge
+
+============================================================
+三、怎么看收入 / 提现
+============================================================
+
+1. 打开 https://app.lemonsqueezy.com 登录
+2. 左侧菜单点 "Orders" 看所有订单
+3. 左侧菜单点 "Payouts" 看提现记录
+4. 设置提现方式：Settings → Payouts → 绑定 PayPal 或银行卡
+
+Lemon Squeezy 每月自动结算一次，把钱打到你绑定的账户。
+手续费：每笔 5%。
+
+============================================================
+四、怎么修改网站内容
+============================================================
+
+改代码的流程（每次只需 4 步）：
+
+步骤 1：打开 PowerShell
+  按 Win 键 → 输入 powershell → 回车
+
+步骤 2：进入项目文件夹
+  复制粘贴下面这行，回车：
+  cd C:\Users\Administrator\Documents\Codex\2026-06-06\token\work\invoiceforge
+
+步骤 3：改代码
+  用记事本或 VSCode 打开要改的文件（文件都在 invoiceforge 文件夹里）
+
+  常用文件位置：
+  - 首页界面：public\index.html
+  - 样式配色：public\css\app.css
+  - 页面逻辑：public\js\app.js
+  - 后端API：  server.js
+  - 发票引擎：src\invoice.js
+
+步骤 4：推送更新（改完代码后在 PowerShell 执行）
+  git add .
+  git commit -m "描述你改了什么"
+  git push origin master
+
+推上去之后 Railway 自动重新部署，等 1-2 分钟网站就更新了。
+
+============================================================
+五、常见操作
+============================================================
+
+▸ 网站打不开了怎么办？
+  1. 打开 https://railway.app 登录
+  2. 找到 invoiceforge 项目
+  3. 看状态是不是绿色的 "Active"
+  4. 如果不是 → 点 "Redeploy"
+  5. 如果 Railway 欠费了 → 绑信用卡续费（约 $5/月）
+
+▸ 想改定价（比如改成 $19/月）？
+  1. 打开 https://app.lemonsqueezy.com → Products
+  2. 点你的产品 → 编辑价格 → 保存
+  3. 不用改网站代码，付款链接不变
+
+▸ 想加新功能？
+  在 Codex 里告诉我，我写好代码，你执行上面"四、怎么修改网站内容"的步骤推送就行。
+
+▸ 免费额度不够用了？
+  打开 src\invoice.js，找到 FREE_LIMIT = 3，改成想要的数字，然后推送。
+
+▸ 想换个域名（比如买 invoiceforge.com）？
+  1. 去阿里云/Namecheap 买域名
+  2. Railway 项目 → Settings → Domains → 添加你的域名
+  3. 按提示改 DNS 记录
+
+============================================================
+六、电脑坏了 / 换电脑了怎么办？
+============================================================
+
+不用担心，所有代码都在 GitHub 上。
+
+在新电脑上：
+  1. 安装 Node.js（https://nodejs.org）
+  2. 安装 Git（https://git-scm.com）
+  3. 打开 PowerShell，执行：
+     git clone https://github.com/king971xn/invoiceforge.git
+     cd invoiceforge
+     npm install
+     node server.js
+  4. 打开浏览器访问 http://localhost:3457 测试
+
+云端的产品不受影响，换电脑期间网站照样运行。
+
+============================================================
+七、快速操作卡片（贴在桌面上）
+============================================================
+
+[ 改代码 + 更新网站 ]
+  PowerShell → cd 进项目 → 改文件 → 保存
+  → git add . → git commit -m "改了xxx"
+  → git push origin master → 等 1 分钟 → 刷新网站
+
+[ 看有没有人付款 ]
+  打开 app.lemonsqueezy.com → Orders
+
+[ 网站挂了 ]
+  打开 railway.app → 找到 invoiceforge → Redeploy
+
+[ 产品网址 ]
+  invoiceforge-production-3495.up.railway.app
+
+[ 付款链接 ]
+  invoiceforge.lemonsqueezy.com/checkout/buy/5cb1d06e-...
+
+============================================================

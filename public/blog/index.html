@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog — Invoicing Tips & Freelance Guides | InvoiceForge</title>
+  <meta name="description" content="Expert guides on invoicing, freelancing, and getting paid faster. Tips for small businesses, consultants, and independent professionals.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://invoiceforge-production-3495.up.railway.app/blog">
+  <meta property="og:title" content="InvoiceForge Blog — Invoicing Tips & Freelance Guides">
+  <meta property="og:description" content="Expert guides on invoicing, freelancing, and getting paid faster.">
+  <meta property="og:type" content="website">
+  <link rel="stylesheet" href="/css/landing.css">
+  <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+<header class="nav">
+  <div class="nav-inner">
+    <a href="/" class="logo"><span class="logo-icon">&#9670;</span> InvoiceForge</a>
+    <nav class="nav-links">
+      <a href="/app">Open App</a>
+      <a href="/blog" style="color:var(--primary);font-weight:700">Blog</a>
+    </nav>
+  </div>
+</header>
+
+<section class="blog-hero">
+  <div class="section-inner" style="padding-bottom:40px">
+    <h1>InvoiceForge Blog</h1>
+    <p class="section-sub" style="margin-bottom:0">Invoicing guides, freelance tips, and small business insights.</p>
+  </div>
+</section>
+
+<section>
+  <div class="section-inner" style="padding-top:0">
+    <div class="blog-grid" id="blogGrid">
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-bottom" style="border:none;padding-top:0;margin-top:0">
+      <p>&copy; 2026 InvoiceForge. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+const posts = [
+  {
+    slug: 'how-to-create-professional-invoice',
+    title: 'How to Create a Professional Invoice That Gets You Paid Faster',
+    excerpt: 'Learn the 7 essential elements every professional invoice needs. From invoice numbers to payment terms — a complete guide for freelancers and small businesses.',
+    date: '2026-06-06',
+    category: 'Guides',
+    readTime: '5 min read'
+  },
+  {
+    slug: 'best-invoicing-practices-freelancers',
+    title: '10 Invoicing Best Practices Every Freelancer Should Follow',
+    excerpt: 'Stop chasing late payments. These proven invoicing practices will help you get paid on time and maintain professional client relationships.',
+    date: '2026-06-05',
+    category: 'Freelancing',
+    readTime: '6 min read'
+  },
+  {
+    slug: 'free-vs-paid-invoice-generators',
+    title: 'Free vs Paid Invoice Generators: Which One Is Right for Your Business?',
+    excerpt: 'Compare free and paid invoicing tools. When does it make sense to upgrade, and what features actually matter for your workflow?',
+    date: '2026-06-04',
+    category: 'Tools',
+    readTime: '4 min read'
+  },
+  {
+    slug: 'invoice-templates-for-small-business',
+    title: '5 Invoice Templates Every Small Business Should Have',
+    excerpt: 'From service invoices to product invoices — the essential templates that cover 90% of small business billing scenarios.',
+    date: '2026-06-03',
+    category: 'Templates',
+    readTime: '5 min read'
+  },
+  {
+    slug: 'getting-paid-faster-freelance-tips',
+    title: 'Getting Paid Faster: 8 Tips for Freelancers and Consultants',
+    excerpt: 'Practical strategies to reduce payment delays. Clear payment terms, follow-up templates, and tools that make clients pay on time.',
+    date: '2026-06-02',
+    category: 'Freelancing',
+    readTime: '5 min read'
+  },
+  {
+    slug: 'what-to-include-in-an-invoice',
+    title: 'What to Include in an Invoice: The Complete Checklist',
+    excerpt: 'A comprehensive checklist of every field your invoice should include. Avoid payment delays caused by incomplete or unclear invoices.',
+    date: '2026-06-01',
+    category: 'Guides',
+    readTime: '4 min read'
+  }
+];
+
+const grid = document.getElementById('blogGrid');
+posts.forEach(post => {
+  const card = document.createElement('article');
+  card.className = 'blog-card';
+  card.innerHTML = `
+    <div class="blog-card-meta">
+      <span class="blog-category">${post.category}</span>
+      <span class="blog-date">${post.date}</span>
+      <span class="blog-readtime">${post.readTime}</span>
+    </div>
+    <h2><a href="/blog/${post.slug}">${post.title}</a></h2>
+    <p class="blog-excerpt">${post.excerpt}</p>
+    <a href="/blog/${post.slug}" class="blog-readmore">Read article &rarr;</a>
+  `;
+  grid.appendChild(card);
+});
+</script>
+</body>
+</html>
