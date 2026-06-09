@@ -1,0 +1,8 @@
+# InvoiceForge SEO 博客生成器依赖
+# 安装: pip install -r scripts/requirements.txt
+
+# === 必需（本地 & CI 通用）===
+openai>=1.0.0           # DeepSeek API 兼容 OpenAI SDK
+
+# === 仅本地模式需要 ===
+PyGithub>=2.0.0          # GitHub Contents API 操作（CI 模式使用 git 命令，不需要此包）

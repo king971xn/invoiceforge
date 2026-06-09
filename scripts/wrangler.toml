@@ -1,0 +1,20 @@
+# InvoiceForge Analytics Worker — Cloudflare Wrangler 配置
+# 部署：wrangler deploy
+# 注意：需要先创建 KV namespace
+#
+# wrangler kv:namespace create ANALYTICS_KV
+# wrangler kv:namespace create ANALYTICS_KV --preview  # 预览环境
+
+name = "invoiceforge-analytics"
+main = "scripts/analytics-worker.js"
+compatibility_date = "2025-01-01"
+
+# 免费套餐：10 万次请求/天，足够中小站点
+# 如需绑定自定义域名：
+# workers_dev = false
+# route = "analytics.invoiceforge.app/*"
+
+[[kv_namespaces]]
+binding = "ANALYTICS_KV"
+id = "YOUR_KV_NAMESPACE_ID"  # 替换为 wrangler kv:namespace create 返回的 ID
+preview_id = "YOUR_PREVIEW_ID"  # 替换为预览环境的 ID
