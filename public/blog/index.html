@@ -47,73 +47,56 @@
 </footer>
 
 <script>
-const posts = [
-  {
-    slug: 'how-to-create-professional-invoice',
-    title: 'How to Create a Professional Invoice That Gets You Paid Faster',
-    excerpt: 'Learn the 7 essential elements every professional invoice needs. From invoice numbers to payment terms — a complete guide for freelancers and small businesses.',
-    date: '2026-06-06',
-    category: 'Guides',
-    readTime: '5 min read'
-  },
-  {
-    slug: 'best-invoicing-practices-freelancers',
-    title: '10 Invoicing Best Practices Every Freelancer Should Follow',
-    excerpt: 'Stop chasing late payments. These proven invoicing practices will help you get paid on time and maintain professional client relationships.',
-    date: '2026-06-05',
-    category: 'Freelancing',
-    readTime: '6 min read'
-  },
-  {
-    slug: 'free-vs-paid-invoice-generators',
-    title: 'Free vs Paid Invoice Generators: Which One Is Right for Your Business?',
-    excerpt: 'Compare free and paid invoicing tools. When does it make sense to upgrade, and what features actually matter for your workflow?',
-    date: '2026-06-04',
-    category: 'Tools',
-    readTime: '4 min read'
-  },
-  {
-    slug: 'invoice-templates-for-small-business',
-    title: '5 Invoice Templates Every Small Business Should Have',
-    excerpt: 'From service invoices to product invoices — the essential templates that cover 90% of small business billing scenarios.',
-    date: '2026-06-03',
-    category: 'Templates',
-    readTime: '5 min read'
-  },
-  {
-    slug: 'getting-paid-faster-freelance-tips',
-    title: 'Getting Paid Faster: 8 Tips for Freelancers and Consultants',
-    excerpt: 'Practical strategies to reduce payment delays. Clear payment terms, follow-up templates, and tools that make clients pay on time.',
-    date: '2026-06-02',
-    category: 'Freelancing',
-    readTime: '5 min read'
-  },
-  {
-    slug: 'what-to-include-in-an-invoice',
-    title: 'What to Include in an Invoice: The Complete Checklist',
-    excerpt: 'A comprehensive checklist of every field your invoice should include. Avoid payment delays caused by incomplete or unclear invoices.',
-    date: '2026-06-01',
-    category: 'Guides',
-    readTime: '4 min read'
-  }
+// Static fallback posts shown when the API is unavailable (e.g. local dev without content/blog/)
+var STATIC_POSTS = [
+  { slug: 'how-to-create-professional-invoice', title: 'How to Create a Professional Invoice That Gets You Paid Faster', excerpt: 'Learn the 7 essential elements every professional invoice needs.', date: '2026-06-06', category: 'Guides', readTime: '5 min read' },
+  { slug: 'best-invoicing-practices-freelancers', title: '10 Invoicing Best Practices Every Freelancer Should Follow', excerpt: 'Stop chasing late payments with these proven invoicing practices.', date: '2026-06-05', category: 'Freelancing', readTime: '6 min read' },
+  { slug: 'free-vs-paid-invoice-generators', title: 'Free vs Paid Invoice Generators: Which One Is Right for Your Business?', excerpt: 'Compare free and paid invoicing tools and what features matter.', date: '2026-06-04', category: 'Tools', readTime: '4 min read' },
+  { slug: 'invoice-templates-for-small-business', title: '5 Invoice Templates Every Small Business Should Have', excerpt: 'Essential templates that cover 90% of small business billing.', date: '2026-06-03', category: 'Templates', readTime: '5 min read' },
+  { slug: 'getting-paid-faster-freelance-tips', title: 'Getting Paid Faster: 8 Tips for Freelancers and Consultants', excerpt: 'Practical strategies to reduce payment delays.', date: '2026-06-02', category: 'Freelancing', readTime: '5 min read' },
+  { slug: 'what-to-include-in-an-invoice', title: 'What to Include in an Invoice: The Complete Checklist', excerpt: 'A comprehensive checklist of every field your invoice should include.', date: '2026-06-01', category: 'Guides', readTime: '4 min read' }
 ];
 
-const grid = document.getElementById('blogGrid');
-posts.forEach(post => {
-  const card = document.createElement('article');
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function renderPost(post, isDynamic) {
+  var link = isDynamic ? '/blog/post/' + post.slug : '/blog/' + post.slug;
+  var card = document.createElement('article');
   card.className = 'blog-card';
-  card.innerHTML = `
-    <div class="blog-card-meta">
-      <span class="blog-category">${post.category}</span>
-      <span class="blog-date">${post.date}</span>
-      <span class="blog-readtime">${post.readTime}</span>
-    </div>
-    <h2><a href="/blog/${post.slug}">${post.title}</a></h2>
-    <p class="blog-excerpt">${post.excerpt}</p>
-    <a href="/blog/${post.slug}" class="blog-readmore">Read article &rarr;</a>
-  `;
-  grid.appendChild(card);
-});
+  card.innerHTML =
+    '<div class="blog-card-meta">' +
+      '<span class="blog-category">' + escHtml(post.category) + '</span>' +
+      '<span class="blog-date">' + escHtml(post.date) + '</span>' +
+      '<span class="blog-readtime">' + escHtml(post.readTime) + '</span>' +
+    '</div>' +
+    '<h2><a href="' + link + '">' + escHtml(post.title) + '</a></h2>' +
+    '<p class="blog-excerpt">' + escHtml(post.excerpt) + '</p>' +
+    '<a href="' + link + '" class="blog-readmore">Read article →</a>';
+  return card;
+}
+
+(function loadBlog() {
+  var grid = document.getElementById('blogGrid');
+  grid.innerHTML = '<p style="color:var(--text-muted);text-align:center">Loading articles...</p>';
+
+  fetch('/api/blog-list')
+    .then(function(res) {
+      if (!res.ok) throw new Error('API error');
+      return res.json();
+    })
+    .then(function(posts) {
+      if (posts.length > 0) {
+        grid.innerHTML = '';
+        posts.forEach(function(p) { grid.appendChild(renderPost(p, true)); });
+        return;
+      }
+      throw new Error('empty');
+    })
+    .catch(function() {
+      grid.innerHTML = '';
+      STATIC_POSTS.forEach(function(p) { grid.appendChild(renderPost(p, false)); });
+    });
+})();
 </script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 // InvoiceForge Server
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const invoiceEngine = require('./src/invoice');
 const clients = require('./src/clients');
 const { renderInvoice } = require('./src/pdf');
@@ -25,6 +26,112 @@ function escapeXml(str) {
   return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
+// --- Markdown front matter parser (reads YAML-like --- blocks) ---
+function parseFrontMatter(content) {
+  const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+  if (!match) return null;
+  const fm = {};
+  const lines = match[1].split('\n');
+  for (const line of lines) {
+    const m = line.match(/^(\w+):\s*(.+)$/);
+    if (!m) continue;
+    let val = m[2].trim().replace(/^["']|["']$/g, '');
+    if (val.startsWith('[') && val.endsWith(']')) {
+      try { val = JSON.parse(val); } catch {}
+    }
+    fm[m[1]] = val;
+  }
+  return fm;
+}
+
+// --- Lightweight Markdown-to-HTML converter (no external deps) ---
+function mdToHtml(md) {
+  let html = md
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/^#### (.+)$/gm, '<h4>$1</h4>')
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+    .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>')
+    .replace(/^---$/gm, '<hr>');
+
+  const blocks = html.split('\n');
+  const out = [];
+  let inList = false, inParagraph = false;
+
+  for (const rawLine of blocks) {
+    let line = rawLine;
+    const isTagLine = /^<(h[1-4]|ul|ol|li|hr|div|p|blockquote|pre|table|script)/.test(line);
+    const isListItem = /^[-*]\s/.test(line);
+    const isOrderedItem = /^\d+\.\s/.test(line);
+    const isEmpty = line.trim() === '';
+
+    if (isListItem) {
+      if (!inList) { out.push('<ul>'); inList = 'ul'; }
+      if (inParagraph) { out.push('</p>'); inParagraph = false; }
+      line = '<li>' + line.replace(/^[-*]\s+/, '') + '</li>';
+    } else if (isOrderedItem) {
+      if (!inList) { out.push('<ol>'); inList = 'ol'; }
+      if (inParagraph) { out.push('</p>'); inParagraph = false; }
+      line = '<li>' + line.replace(/^\d+\.\s+/, '') + '</li>';
+    } else {
+      if (inList) { out.push(inList === 'ul' ? '</ul>' : '</ol>'); inList = false; }
+    }
+
+    if (isTagLine) {
+      if (inParagraph) { out.push('</p>'); inParagraph = false; }
+      out.push(line);
+    } else if (isEmpty) {
+      if (inParagraph) { out.push('</p>'); inParagraph = false; }
+    } else if (!isListItem && !isOrderedItem) {
+      if (!inParagraph) { out.push('<p>'); inParagraph = true; } else { out.push(' '); }
+      out.push(line);
+    }
+  }
+  if (inParagraph) out.push('</p>');
+  if (inList) out.push(inList === 'ul' ? '</ul>' : '</ol>');
+
+  return out.join('\n');
+}
+
+// --- Article page HTML template ---
+function articlePageHtml(title, description, bodyHtml) {
+  const desc = escapeXml(description || '');
+  const t = escapeXml(title || 'Blog Post');
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${t} | InvoiceForge Blog</title>
+<meta name="description" content="${desc}">
+<meta name="robots" content="index, follow">
+<link rel="stylesheet" href="/css/landing.css">
+<link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+<header class="nav">
+<div class="nav-inner">
+<a href="/" class="logo"><span class="logo-icon">&#9670;</span> InvoiceForge</a>
+<nav class="nav-links">
+<a href="/app">Open App</a>
+<a href="/blog">Blog</a>
+</nav>
+</div>
+</header>
+<article class="blog-article">
+<div class="section-inner">
+<h1>${t}</h1>
+${bodyHtml}
+</div>
+</article>
+<footer class="footer"><div class="footer-inner"><div class="footer-bottom"><p>&copy; 2026 InvoiceForge</p></div></div></footer>
+</body></html>`;
+}
+
 // --- Landing Page (SEO-optimized marketing page) ---
 
 // --- Privacy & Terms ---
@@ -35,10 +142,65 @@ app.get('/terms', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'terms.html'));
 });
 
-// --- Blog ---
+// --- Blog listing page ---
 app.get('/blog', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'blog', 'index.html'));
 });
+
+// --- Blog API: dynamic post list from content/blog/*.md ---
+app.get('/api/blog-list', (req, res) => {
+  const blogDir = path.join(__dirname, 'content', 'blog');
+  const posts = [];
+  try {
+    if (!fs.existsSync(blogDir)) { res.json(posts); return; }
+    const files = fs.readdirSync(blogDir).filter(f => f.endsWith('.md'));
+    for (const file of files) {
+      const content = fs.readFileSync(path.join(blogDir, file), 'utf-8');
+      const fm = parseFrontMatter(content);
+      if (fm && fm.title) {
+        const slug = file.replace(/^\d{4}-\d{2}-\d{2}-/, '').replace(/\.md$/, '');
+        const body = content.replace(/^---[\s\S]*?---\r?\n*/, '');
+        const wordCount = body.split(/\s+/).filter(Boolean).length;
+        posts.push({
+          slug,
+          title: fm.title,
+          excerpt: fm.description || '',
+          date: fm.date || file.slice(0, 10),
+          category: (fm.keywords && fm.keywords[0])
+            ? fm.keywords[0].replace(/\b\w/g, c => c.toUpperCase())
+            : 'Guide',
+          readTime: Math.max(1, Math.ceil(wordCount / 200)) + ' min read',
+        });
+      }
+    }
+    posts.sort((a, b) => b.date.localeCompare(a.date));
+  } catch (e) { /* content/blog/ may not exist */ }
+  res.json(posts);
+});
+
+// --- Blog dynamic article: read MD from content/blog/, render as HTML ---
+app.get('/blog/post/:slug', (req, res) => {
+  const slug = req.params.slug;
+  const blogDir = path.join(__dirname, 'content', 'blog');
+  try {
+    const files = fs.readdirSync(blogDir).filter(f => f.endsWith('.md'));
+    const file = files.find(f => f.includes(slug));
+    if (!file) throw new Error('not found');
+    const raw = fs.readFileSync(path.join(blogDir, file), 'utf-8');
+    const fm = parseFrontMatter(raw);
+    const body = raw.replace(/^---[\s\S]*?---\r?\n*/, '');
+    const html = mdToHtml(body);
+    res.send(articlePageHtml(
+      fm ? fm.title : slug.replace(/-/g, ' '),
+      fm ? (fm.description || '') : '',
+      html,
+    ));
+  } catch (e) {
+    res.status(404).sendFile(path.join(__dirname, 'public', 'blog', '404.html'));
+  }
+});
+
+// --- Blog static article (backward compat for pre-existing HTML files) ---
 app.get('/blog/:slug', (req, res) => {
   const slug = req.params.slug;
   const blogDir = path.join(__dirname, 'public', 'blog');
@@ -236,9 +398,9 @@ app.get('/og-image.png', (req, res) => {
     <text x="80" y="180" font-family="system-ui,sans-serif" font-size="64" font-weight="800" fill="#ffffff">${escapeXml(title)}</text>
     <text x="80" y="240" font-family="system-ui,sans-serif" font-size="28" fill="#a5b4fc">${escapeXml(subtitle)}</text>
     <rect x="80" y="340" width="240" height="56" rx="8" fill="#4f46e5"/>
-    <text x="200" y="376" font-family="system-ui,sans-serif" font-size="22" font-weight="700" fill="#ffffff" text-anchor="middle">Start Free →</text>
-    <text x="80" y="480" font-family="system-ui,sans-serif" font-size="22" fill="#6b7280">3 free invoices/month • No sign-up • PDF export</text>
-    <text x="80" y="560" font-family="system-ui,sans-serif" font-size="28" font-weight="700" fill="#818cf8">◆ InvoiceForge</text>
+    <text x="200" y="376" font-family="system-ui,sans-serif" font-size="22" font-weight="700" fill="#ffffff" text-anchor="middle">Start Free 鈫?/text>
+    <text x="80" y="480" font-family="system-ui,sans-serif" font-size="22" fill="#6b7280">3 free invoices/month 鈥?No sign-up 鈥?PDF export</text>
+    <text x="80" y="560" font-family="system-ui,sans-serif" font-size="28" font-weight="700" fill="#818cf8">鈼?InvoiceForge</text>
   </svg>`;
   res.type('image/svg+xml').set('Cache-Control', 'public, max-age=86400').send(svg);
 });

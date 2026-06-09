@@ -165,3 +165,61 @@
   .blog-post-header h1 { font-size: 24px; }
   .blog-post-content { font-size: 16px; }
 }
+
+/* Dynamic article (blog/post/:slug rendered from content/blog/*.md) */
+.blog-article {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 48px 24px;
+}
+.blog-article h1 {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.25;
+  margin-bottom: 24px;
+}
+.blog-article h2 {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 36px 0 14px;
+}
+.blog-article h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 28px 0 10px;
+}
+.blog-article h4 {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 24px 0 8px;
+}
+.blog-article p {
+  font-size: 17px;
+  line-height: 1.8;
+  margin-bottom: 18px;
+  color: var(--text-secondary);
+}
+.blog-article ul, .blog-article ol {
+  margin: 0 0 18px 24px;
+  color: var(--text-secondary);
+  font-size: 17px;
+  line-height: 1.8;
+}
+.blog-article li { margin-bottom: 8px; }
+.blog-article strong { color: var(--text); }
+.blog-article code {
+  background: var(--bg);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+.blog-article a { color: var(--primary); text-decoration: underline; }
+.blog-article hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 32px 0;
+}
+@media (max-width: 700px) {
+  .blog-article h1 { font-size: 24px; }
+  .blog-article p, .blog-article ul, .blog-article ol { font-size: 16px; }
+}
