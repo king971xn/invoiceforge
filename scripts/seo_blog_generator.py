@@ -284,7 +284,6 @@ def load_history(history_file: str = "scripts/seo_history.txt") -> list:
 def save_history(keyword: str, filename: str, history_file: str = "scripts/seo_history.txt"):
     """将本次生成的关键词追加到历史记录。"""
     try:
-        os.makedirs(os.path.dirname(history_file), exist_ok=True)
         with open(history_file, "a", encoding="utf-8") as f:
             f.write(f"{keyword}|{filename}|{datetime.now(timezone.utc).isoformat()}\n")
     except Exception as e:
