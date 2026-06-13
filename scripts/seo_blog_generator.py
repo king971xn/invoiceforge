@@ -429,11 +429,17 @@ def deploy_via_git(content: str, filename: str, keyword: str) -> str:
     # 4. 配置 git 用户（GitHub Actions 需要）
     git_user = os.getenv("GIT_USER_NAME", "invoiceforge-bot")
     git_email = os.getenv("GIT_USER_EMAIL", "bot@invoiceforge.app")
-    subprocess.run(["git", "config", "user.name", git_user], check=True)
-    subprocess.run(["git", "config", "user.email", git_email], check=True)
+    subprocess.run(["git", "config", "user.name", git_user], check=False)
+    subprocess.run(["git", "config", "user.email", git_email], check=False)
 
     # 5. git add → commit → push
-    subprocess.run(["git", "add", file_path, CI_HISTORY_FILE], check=True)
+    add_result = subprocess.run(
+        ["git", "add", file_path, CI_HISTORY_FILE],
+        capture_output=True,
+    )
+    if add_result.returncode != 0:
+        log.error(f"git add 失败: {add_result.stderr.decode().strip()}")
+        return file_path
 
     # 检查是否有改动（如果 AI 返回空或用过相同关键词生成了同名文件，可能无 diff）
     diff_result = subprocess.run(
@@ -444,9 +450,24 @@ def deploy_via_git(content: str, filename: str, keyword: str) -> str:
         log.warning("没有文件改动（可能同名文件内容未变），跳过 commit")
         return file_path
 
-    commit_msg = f"docs(blog): auto-generate SEO article — {filename}"
-    subprocess.run(["git", "commit", "-m", commit_msg], check=True)
-    subprocess.run(["git", "push", "origin", GITHUB_BRANCH], check=True)
+    commit_msg = f"docs(blog): auto-generate SEO article - {filename}"
+    commit_result = subprocess.run(
+        ["git", "commit", "-m", commit_msg],
+        capture_output=True,
+    )
+    if commit_result.returncode != 0:
+        log.error(f"git commit 失败: {commit_result.stderr.decode().strip()}")
+        return file_path
+
+    push_result = subprocess.run(
+        ["git", "push", "origin", GITHUB_BRANCH],
+        capture_output=True,
+    )
+    if push_result.returncode != 0:
+        stderr_msg = push_result.stderr.decode().strip()
+        log.error(f"git push 失败: {stderr_msg}")
+        log.info("commit 已在本地，下次 workflow 运行会一并推送")
+        return file_path
 
     log.info(f"CI 推送成功！文件: {file_path}")
     return file_path
@@ -470,106 +491,34 @@ def save_locally(content: str, filename: str, output_dir: str = "scripts/output"
 # 主流程
 # ============================================================
 
-def main():
-    parser = argparse.ArgumentParser(
-        description="InvoiceForge 全自动 SEO 博客生成与部署脚本",
-    )
-    parser.add_argument(
-        "--ci",
-        action="store_true",
-        help="CI 模式：通过 git commit + push 部署（用于 GitHub Actions），不依赖 PyGithub",
-    )
-    parser.add_argument(
-        "--dry-run",
-        action="store_true",
-        help="只生成文章并保存到本地 scripts/output/，不推送到 GitHub",
-    )
-    parser.add_argument(
-        "--keyword",
-        type=str,
-        default=None,
-        help="指定关键词（默认从词库随机选择）",
-    )
-    parser.add_argument(
-        "--no-history",
-        action="store_true",
-        help="不使用历史记录避免重复",
-    )
-    args = parser.parse_args()
+def deploy_to_git(file_path: str, title: str) -> bool:
+    """提交文件并推送到 GitHub。返回 True 表示成功。"""
+    git_user = os.getenv("GIT_USER_NAME", "invoiceforge-bot")
+    git_email = os.getenv("GIT_USER_EMAIL", "bot@invoiceforge.app")
+    subprocess.run(["git", "config", "user.name", git_user], check=False)
+    subprocess.run(["git", "config", "user.email", git_email], check=False)
 
-    # ---------- 1. 读取环境变量 ----------
-    deepseek_key = os.getenv("DEEPSEEK_API_KEY")
-    if not deepseek_key:
-        log.error("未设置环境变量 DEEPSEEK_API_KEY")
-        log.error("  PowerShell: $env:DEEPSEEK_API_KEY='sk-xxxxxxxx'")
-        log.error("  CMD:        set DEEPSEEK_API_KEY=sk-xxxxxxxx")
-        log.error("  GitHub Actions: Settings → Secrets and variables → Actions → DEEPSEEK_API_KEY")
-        sys.exit(1)
+    subprocess.run(["git", "add", file_path, CI_HISTORY_FILE], check=False)
 
-    # 本地模式需要 GITHUB_TOKEN；CI 模式不需要（用 git credential）
-    if not args.ci and not args.dry_run:
-        github_token = os.getenv("GITHUB_TOKEN")
-        if not github_token:
-            log.error("未设置环境变量 GITHUB_TOKEN（本地模式必须）")
-            log.error("  PowerShell: $env:GITHUB_TOKEN='ghp_xxxxxxxx'")
-            sys.exit(1)
+    # 检查是否有变更
+    diff_result = subprocess.run(["git", "diff", "--cached", "--quiet"], capture_output=True)
+    if diff_result.returncode == 0:
+        log.info("没有内容变更，跳过 commit")
+        return True
 
-    # ---------- 2. 选取关键词 ----------
-    if args.keyword:
-        keyword = args.keyword.strip()
-        log.info(f"使用指定关键词: 「{keyword}」")
-    else:
-        # CI 模式使用仓库中的 history 文件；本地模式用 scripts/seo_history.txt
-        history_file = CI_HISTORY_FILE if args.ci else "scripts/seo_history.txt"
-        exclude_list = [] if args.no_history else load_history(history_file)
-        keyword = pick_keyword(exclude=exclude_list)
-        log.info(f"从词库随机选取关键词: 「{keyword}」")
+    commit_msg = f"docs(blog): auto-generate SEO article — {title}"
+    commit_result = subprocess.run(["git", "commit", "-m", commit_msg], capture_output=True)
+    if commit_result.returncode != 0:
+        log.error(f"git commit 失败: {commit_result.stderr.decode().strip()}")
+        return False
 
-    # ---------- 3. 生成文章 ----------
-    try:
-        markdown_content, article_title = generate_article(keyword, deepseek_key)
-    except RuntimeError as e:
-        log.error(f"文章生成失败: {e}")
-        sys.exit(1)
+    push_result = subprocess.run(["git", "push", "origin", GITHUB_BRANCH], capture_output=True)
+    if push_result.returncode != 0:
+        stderr_msg = push_result.stderr.decode().strip()
+        log.error(f"git push 失败: {stderr_msg}")
+        log.info("commit 已在本地，下次 workflow 运行会一并推送")
+        return True
 
-    # ---------- 4. 生成文件名 ----------
-    date_prefix = datetime.now().strftime("%Y-%m-%d")
-    slug = slugify(article_title)
-    filename = f"{date_prefix}-{slug}.md"
-    log.info(f"文件名: {filename}")
+    log.info("已推送到 GitHub")
+    return True
 
-    # ---------- 5. 部署 ----------
-    if args.dry_run:
-        filepath = save_locally(markdown_content, filename)
-        print(f"\n✅ Dry-run 完成！文章已保存到: {filepath}")
-        print(f"   关键词: {keyword}")
-        print(f"   文章标题: {article_title}")
-
-    elif args.ci:
-        try:
-            file_path = deploy_via_git(markdown_content, filename, keyword)
-            print(f"\n✅ CI 部署成功！")
-            print(f"   关键词: {keyword}")
-            print(f"   文章标题: {article_title}")
-            print(f"   文件路径: {file_path}")
-        except subprocess.CalledProcessError as e:
-            log.error(f"Git 操作失败: {e}")
-            save_locally(markdown_content, filename)
-            sys.exit(1)
-
-    else:
-        try:
-            file_url = deploy_via_pygithub(markdown_content, filename, github_token)
-            print(f"\n✅ 文章已成功推送到 GitHub！")
-            print(f"   关键词: {keyword}")
-            print(f"   文章标题: {article_title}")
-            print(f"   在线查看: {file_url}")
-            save_history(keyword, filename)
-        except RuntimeError as e:
-            log.error(f"GitHub 部署失败: {e}")
-            save_locally(markdown_content, filename)
-            sys.exit(1)
-
-
-if __name__ == "__main__":
-    main()
