@@ -129,7 +129,7 @@ def is_stale(post: dict, threshold_days: int = STALE_DAYS) -> bool:
 # 核心优化逻辑
 # ============================================================
 
-def optimize_post(post: dict, all_posts: list, api_key: str, traffic_map: dict = None) -> str | None:
+def optimize_post(post: dict, all_posts: list, api_key: str) -> str | None:
     """调用 DeepSeek 优化一篇老化文章。
 
     优化策略：
@@ -154,9 +154,6 @@ def optimize_post(post: dict, all_posts: list, api_key: str, traffic_map: dict =
     log.info(f"正在优化: {post['title'][:60]}...")
 
     prompt = textwrap.dedent(f"""\
-{traffic_info}
-{("=== HIGH TRAFFIC PAGES (internal link targets) ===\n" + top_pages_str) if top_pages_str else ""}
-
 You are an SEO editor optimizing an existing blog post for better search performance.
 
 === CURRENT ARTICLE FRONT MATTER ===
@@ -278,7 +275,7 @@ def main():
     # ---------- 3. 逐篇优化 ----------
     optimized_count = 0
     for post in stale[:MAX_OPTIMIZE_PER_RUN]:
-        new_content = optimize_post(post, posts, api_key, traffic_map)
+        new_content = optimize_post(post, posts, api_key)
         if new_content:
             write_and_commit(new_content, post["path"])
             optimized_count += 1
