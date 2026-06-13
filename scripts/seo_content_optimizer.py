@@ -205,8 +205,8 @@ Output the COMPLETE revised article with updated Front Matter, in valid Markdown
 # 部署
 # ============================================================
 
-def write_and_commit(optimized_content: str, filepath: str):
-    """将优化后的内容写回文件并 git commit + push。"""
+def write_and_commit(optimized_content: str, filepath: str) -> bool:
+    """将优化后的内容写回文件并 git commit + push。返回 True 表示成功。"""
     with open(filepath, "w", encoding="utf-8") as f:
         f.write(optimized_content)
 
@@ -214,19 +214,38 @@ def write_and_commit(optimized_content: str, filepath: str):
 
     git_user = os.getenv("GIT_USER_NAME", "invoiceforge-bot")
     git_email = os.getenv("GIT_USER_EMAIL", "bot@invoiceforge.app")
-    subprocess.run(["git", "config", "user.name", git_user], check=True)
-    subprocess.run(["git", "config", "user.email", git_email], check=True)
+    subprocess.run(["git", "config", "user.name", git_user], check=False)
+    subprocess.run(["git", "config", "user.email", git_email], check=False)
 
-    subprocess.run(["git", "add", filepath], check=True)
+    add_result = subprocess.run(["git", "add", filepath], capture_output=True)
+    if add_result.returncode != 0:
+        log.error(f"git add 失败: {add_result.stderr.decode().strip()}")
+        return False
+
     diff_result = subprocess.run(["git", "diff", "--cached", "--quiet"], capture_output=True)
     if diff_result.returncode == 0:
         log.info("优化后内容无变化，跳过 commit")
-        return
+        return True
 
     filename = os.path.basename(filepath)
-    subprocess.run(["git", "commit", "-m", f"seo(optimize): refresh content & meta — {filename}"], check=True)
-    subprocess.run(["git", "push", "origin", "master"], check=True)
+    commit_result = subprocess.run(
+        ["git", "commit", "-m", f"seo(optimize): refresh content & meta - {filename}"],
+        capture_output=True,
+    )
+    if commit_result.returncode != 0:
+        log.error(f"git commit 失败: {commit_result.stderr.decode().strip()}")
+        return False
+
+    push_result = subprocess.run(["git", "push", "origin", "master"], capture_output=True)
+    if push_result.returncode != 0:
+        stderr_msg = push_result.stderr.decode().strip()
+        log.error(f"git push 失败: {stderr_msg}")
+        # push 失败但 commit 已生成，不算完全失败 — 下次运行会一起推
+        log.info("commit 已在本地，下次 workflow 运行会一并推送")
+        return True
+
     log.info(f"优化推送成功: {filename}")
+    return True
 
 
 # ============================================================
@@ -277,8 +296,8 @@ def main():
     for post in stale[:MAX_OPTIMIZE_PER_RUN]:
         new_content = optimize_post(post, posts, api_key)
         if new_content:
-            write_and_commit(new_content, post["path"])
-            optimized_count += 1
+            if write_and_commit(new_content, post["path"]):
+                optimized_count += 1
         else:
             log.warning(f"优化失败，跳过: {os.path.basename(post['path'])}")
 

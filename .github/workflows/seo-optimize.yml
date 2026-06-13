@@ -30,6 +30,11 @@ jobs:
       - name: Install dependencies
         run: pip install openai
 
+      - name: Pre-flight Smoke Test
+        run: |
+          python -m py_compile scripts/seo_content_optimizer.py
+          python -c "from scripts.seo_content_optimizer import parse_front_matter, is_stale; print('Imports OK')"
+
       - name: Run Content Optimizer
         env:
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
