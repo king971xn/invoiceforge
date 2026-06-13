@@ -36,6 +36,11 @@ jobs:
       - name: Install dependencies
         run: pip install openai
 
+      - name: Pre-flight Smoke Test
+        run: |
+          python -m py_compile scripts/seo_blog_generator.py
+          python -c "from scripts.seo_blog_generator import slugify, pick_keyword; print('Imports OK')"
+
       - name: Generate & Deploy SEO Article
         env:
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
