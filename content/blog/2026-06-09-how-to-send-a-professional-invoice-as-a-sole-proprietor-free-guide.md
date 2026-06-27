@@ -1,11 +1,11 @@
 ---
-title: "How to Send a Professional Invoice as a Sole Proprietor (2026 Free Guide)"
-description: "Send a professional invoice as a sole proprietor in under 2 minutes. Free tools, must-include details, and 3 tips to get paid faster."
-keywords: ['sole proprietor invoice', 'send professional invoice as sole proprietor', 'freelance invoice template', 'invoice for sole proprietor']
+title: "How to Send a Professional Invoice as a Sole Proprietor (2026 Free Guide) — Get Paid Faster"
+description: "Send a professional invoice as a sole proprietor in under 2 minutes with free tools. Includes 3 proven tips to get paid faster and avoid common mistakes."
+keywords: ["sole proprietor invoice", "send professional invoice as sole proprietor", "freelance invoice template", "invoice for sole proprietor"]
 date: 2026-06-09
 ---
 
-# How to Send a Professional Invoice as a Sole Proprietor (2026 Free Guide)
+# How to Send a Professional Invoice as a Sole Proprietor (2026 Free Guide) — Get Paid Faster
 
 You’ve just finished a big project for a new client. You did great work. The deadline was met. The client is happy. But then comes the moment that makes every sole proprietor cringe: you have to send an invoice.
 
@@ -27,12 +27,12 @@ A professional invoice does three things:
 - **Prevents confusion** — Clear details reduce questions and follow-ups.
 - **Speeds up payment** — When everything is clear and easy to understand, clients pay faster.
 
-On the flip side, common mistakes like missing payment terms, vague descriptions, or a messy layout can lead to delays and
+On the flip side, common mistakes like missing payment terms, vague descriptions, or a messy layout can l
 
-*Last updated: 2026-06-20*
+*Last updated: 2026-06-27*
 
-### Explore More
+## Explore More
 
 - [The Ultimate Cross Border Freelance Invoicing Guide 2026](/blog/2026-06-12-the-ultimate-cross-border-freelance-invoicing-guide-2026)
-- [The Best Mobile Friendly Invoice Generator for Freelancers on the Go](/blog/2026-06-10-the-best-mobile-friendly-invoice-generator-for-freelancers-on-the-go)
+- [2026's Best Mobile Friendly Invoice Generator for Freelancers on the Go](/blog/2026-06-10-the-best-mobile-friendly-invoice-generator-for-freelancers-on-the-go)
 - [Free Invoice Generator for Sole Proprietors](/blog/free-invoice-generator)
