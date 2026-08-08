@@ -1,7 +1,7 @@
 ---
 title: "Mobile Friendly Invoice Generator for Freelancers (2026): Create Pro Invoices in 2 Minutes"
 description: "Create a professional invoice from your phone in under 2 minutes. No sign-up, instant PDF. The best mobile friendly invoice generator for freelancers in 2026."
-keywords: ["mobile friendly invoice generator", "invoice generator for freelancers", "freelance invoicing app", "create invoice on phone"]
+keywords: ['mobile friendly invoice generator', 'invoice generator for freelancers', 'freelance invoicing app', 'create invoice on phone']
 date: 2026-06-10
 ---
 
@@ -32,15 +32,12 @@ You don't need a complex app. Here's a simple, repeatable process to generate a 
 
 Skip the downloaded apps (they eat up storage and often 
 
-*[Article body continues as originally published...]*
+*[Article body cont
 
-*Last updated: 2026-08-01*
+Last updated: 2026-08-08
 
 ## Explore More
 
-Looking to level up your freelance invoicing game? Check out these related guides:
-
-- [The Ultimate Cross Border Freelance Invoicing Guide 2026](/blog/2026-06-12-the-ultimate-cross-border-freelance-invoicing-guide-2026) — Master international payments, currency conversion, and tax compliance for global clients.
-- [Send a Professional Invoice as a Sole Proprietor (2026 Guide): 3 Proven Tips to Get Paid Faster](/blog/2026-06-09-how-to-send-a-professional-invoice-as-a-sole-proprietor-free-guide) — Essential invoicing strategies for solo business owners.
-- [Free Invoice Generator: Create Unlimited Invoices Online](/blog/free-invoice-generator) — Create unlimited, professional invoices at no cost.
-- [How to Write an Invoice for Freelance Services: A Complete 2026 Guide](/blog/how-to-write-an-invoice-for-freelance-services) — Learn the anatomy of a perfect invoice that gets paid faster.
+- [The Ultimate Cross Border Freelance Invoicing Guide 2026](/blog/2026-06-12-the-ultimate-cross-border-freelance-invoicing-guide-2026)
+- [How to Send a Professional Invoice as a Sole Proprietor (2026 Guide): 3 Proven Tips to Get Paid 3x Faster](/blog/2026-06-09-how-to-send-a-professional-invoice-as-a-sole-proprietor-free-guide)
+- [Free Invoice Generator: Create & Send Invoices Instantly](/blog/free-invoice-generator)
