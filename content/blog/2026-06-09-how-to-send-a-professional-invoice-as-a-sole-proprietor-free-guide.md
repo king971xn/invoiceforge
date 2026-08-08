@@ -1,7 +1,7 @@
 ---
 title: "How to Send a Professional Invoice as a Sole Proprietor (2026 Guide): 3 Proven Tips to Get Paid 3x Faster"
-description: "Learn how to send a professional invoice as a sole proprietor in under 2 minutes with free tools. Avoid costly mistakes and get paid 3x faster with these 3 proven tips."
-keywords: ["sole proprietor invoice", "send professional invoice as sole proprietor", "freelance invoice template", "invoice for sole proprietor"]
+description: "Learn to send a professional invoice as a sole proprietor in 2 minutes with free tools. Avoid costly mistakes and get paid 3x faster with these 3 proven tips."
+keywords: ['sole proprietor invoice', 'send professional invoice as sole proprietor', 'freelance invoice template', 'invoice for sole proprietor']
 date: 2026-06-09
 ---
 
@@ -29,10 +29,10 @@ A professional invoice does three things:
 
 On the flip side, common mistakes like missing payment terms, vague de
 
-Last updated: 2026-08-01
+Last updated: 2026-08-08
 
 ## Explore More
 
 - [The Ultimate Cross Border Freelance Invoicing Guide 2026](/blog/2026-06-12-the-ultimate-cross-border-freelance-invoicing-guide-2026)
-- [2026's Best Mobile Friendly Invoice Generator for Freelancers on the Go: Create Pro Invoices in Under 2 Minutes](/blog/2026-06-10-the-best-mobile-friendly-invoice-generator-for-freelancers-on-the-go)
-- [Free Invoice Generator: Create and Send Professional Invoices Instantly](/blog/free-invoice-generator)
+- [Mobile Friendly Invoice Generator for Freelancers (2026): Create Pro Invoices in 2 Minutes](/blog/2026-06-10-the-best-mobile-friendly-invoice-generator-for-freelancers-on-the-go)
+- [Free Invoice Generator for Sole Proprietors](/blog/free-invoice-generator)
