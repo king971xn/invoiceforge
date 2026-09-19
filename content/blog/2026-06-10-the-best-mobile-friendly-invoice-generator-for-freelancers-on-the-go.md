@@ -1,7 +1,7 @@
 ---
 title: "Mobile Friendly Invoice Generator for Freelancers (2026): Create Pro Invoices in 2 Minutes"
 description: "Create pro invoices from your phone in 2 minutes — no sign-up, instant PDF download. The mobile-friendly invoice generator freelancers actually need in 2026."
-keywords: ["'mobile friendly invoice generator'", "'invoice generator for freelancers'", "'freelance invoicing app'", "'create invoice on phone'"]
+keywords: ['mobile friendly invoice generator', 'invoice generator for freelancers', 'freelance invoicing app', 'create invoice on phone']
 date: 2026-06-10
 ---
 
@@ -30,13 +30,12 @@ You don't need a complex app. Here's a simple, repeatable process to generate a 
 
 ### Step 1: Use a Mobile-Optimized Web Tool
 
-Skip the downloaded apps (they eat up storage and often require subscriptions
+Skip the downloaded apps (they eat up storage and often require subscriptions).
 
-*Last updated: 2026-09-12*
+Last updated: 2026-09-19
 
 ## Explore More
 
 - [The Ultimate Cross Border Freelance Invoicing Guide 2026](/blog/2026-06-12-the-ultimate-cross-border-freelance-invoicing-guide-2026)
-- [How to Send a Professional Invoice as a Sole Proprietor (2026 Guide): 3 Proven Tips to Get Paid 3x Faster](/blog/2026-06-09-how-to-send-a-professional-invoice-as-a-sole-proprietor-free-guide)
-- [Free Invoice Generator: Create and Download a PDF in Seconds](/blog/free-invoice-generator)
-- [How to Invoice International Clients Without Currency Headaches](/blog/invoice-international-clients)
+- [Sole Proprietor Invoice Guide (2026): How to Send a Professional Invoice & Get Paid 3x Faster](/blog/2026-06-09-how-to-send-a-professional-invoice-as-a-sole-proprietor-free-guide)
+- [Free Invoice Generator: Create and Download Invoices in Seconds](/blog/free-invoice-generator)
