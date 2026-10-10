@@ -1,9 +1,8 @@
 ---
 title: "Mobile Friendly Invoice Generator for Freelancers (2026): Create Pro Invoices in 2 Minutes"
 description: "Create pro invoices from your phone in 2 minutes — no sign-up, instant PDF download. The mobile-friendly invoice generator freelancers actually need in 2026."
-keywords: ['mobile friendly invoice generator', 'invoice generator for freelancers', 'freelance invoicing app', 'create invoice on phone']
+keywords: ["'mobile friendly invoice generator'", "'invoice generator for freelancers'", "'freelance invoicing app'", "'create invoice on phone'"]
 date: 2026-06-10
-
 ---
 
 # Mobile Friendly Invoice Generator for Freelancers (2026): Create Pro Invoices in 2 Minutes
@@ -33,15 +32,11 @@ You don't need a complex app. Here's a simple, repeatable process to generate a 
 
 Skip the downloaded apps (they eat up storage and often require subscriptions
 
----
-
-Last updated: 2026-10-03
+Last updated: 2026-10-10
 
 ## Explore More
 
-Ready to level up your invoicing beyond the basics? These guides pair perfectly with a mobile-friendly workflow:
-
-- [The Ultimate Cross Border Freelance Invoicing Guide 2026](/blog/2026-06-12-the-ultimate-cross-border-freelance-invoicing-guide-2026) — Working with international clients? Learn how to handle currencies, tax rules, and cross-border payment details without the headaches.
-- [Sole Proprietor Invoice Guide (2026): Send Pro Invoices & Get Paid 3x Faster](/blog/2026-06-09-how-to-send-a-professional-invoice-as-a-sole-proprietor-free-guide) — New to freelancing as a sole proprietor? This guide walks you through everything you need to invoice like a pro and get paid faster.
-- [Free Invoice Generator: Create & Download PDF Invoices in Seconds](/blog/free-invoice-generator) — Our no-sign-up, mobile-first invoice generator that works on any device. Start invoicing right now.
-- [How to Create an Invoice on Your Phone: A Freelancer's Playbook](/blog/create-invoice-on-phone) — A deeper dive into mobile invoicing tips, templates, and shortcuts for freelancers on the go.
+- [The Ultimate Cross Border Freelance Invoicing Guide 2026](/blog/2026-06-12-the-ultimate-cross-border-freelance-invoicing-guide-2026)
+- [Free Invoice Generator: Create and Download PDF Invoices Instantly](/blog/free-invoice-generator)
+- [How to Invoice International Clients as a Freelancer](/blog/how-to-invoice-international-clients)
+- [Freelance Invoicing App: What to Look For in 2026](/blog/freelance-invoicing-app)
