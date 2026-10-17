@@ -1,7 +1,7 @@
 ---
 title: "Cross Border Freelance Invoicing Guide 2026: Get Paid Faster in Any Currency"
 description: "Master cross border freelance invoicing in 2026: tax rules, currency tips, and a free invoice template that gets you paid in 2 minutes—no sign-up."
-keywords: ['cross border freelance invoicing guide 2026', 'freelance international invoice', 'cross border invoicing freelancer', 'freelance invoice template']
+keywords: ["'cross border freelance invoicing guide 2026'", "'freelance international invoice'", "'cross border invoicing freelancer'", "'freelance invoice template'"]
 date: 2026-06-12
 ---
 
@@ -32,13 +32,13 @@ Here’s a practical workflow to invoice international clients like a pro.
 
 Always invoice in your client’s local currency if possible. This makes it easier for them to pay without extra conversion steps. If you prefer to receive funds in your own currency, clearly state that, and add a note like “Invoice in USD – cli
 
-Last updated: 2026-10-10
+Last updated: 2026-10-17
 
 ## Explore More
 
-Keep your international invoicing workflow smooth with these related guides:
+Ready to keep leveling up your invoicing workflow? These guides pair perfectly with this one:
 
-- [Mobile Friendly Invoice Generator for Freelancers (2026): Create Pro Invoices in 2 Minutes](/blog/2026-06-10-the-best-mobile-friendly-invoice-generator-for-freelancers-on-the-go)
-- [Free Invoice Generator: Create and Download Professional Invoices Instantly](/blog/free-invoice-generator)
-- [Freelance Invoice Template: Download a Ready-to-Use Format](/blog/freelance-invoice-template)
-- [How to Invoice International Clients Without Losing Money to Fees](/blog/how-to-invoice-international-clients)
+- [Mobile Friendly Invoice Generator for Freelancers (2026): Create Pro Invoices in 2 Minutes](/blog/2026-06-10-the-best-mobile-friendly-invoice-generator-for-freelancers-on-the-go) — invoice clients from anywhere, even between meetings.
+- [Free Invoice Generator](/blog/free-invoice-generator) — build a polished, compliant invoice in minutes with no sign-up.
+- [Freelance Invoice Template](/blog/freelance-invoice-template) — grab a ready-made template that covers tax IDs, payment terms, and currency fields.
+- [How to Invoice International Clients Without Losing Money to Fees](/blog/invoice-international-clients-fees) — cut currency and platform costs so more of your income stays yours.
